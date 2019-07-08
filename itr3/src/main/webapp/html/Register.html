@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+
+    <script type="text/javascript" src="../js/jquery-2.1.4.js"></script>
+    <script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="../css/main.css">
+    <link rel="stylesheet" type="text/css" href="../css/Register.css">
+    <script type="text/javascript" src="../js/tool.js"></script>
+    <script type="text/javascript" src="../js/Register.js"></script>
+    <meta charset="UTF-8">
+    <title>注册界面</title>
+</head>
+<body>
+<nav class="navbar  nav-allIn " id="nav_bar"  role="navigation">
+    <div>
+        <ul class="nav navbar-nav navbar-right">
+            <li class="dropdown" >
+                <a  role="button" class="dropdown-toggle"   data-toggle="dropdown">
+
+                    <span class="glyphicon glyphicon-user navSpan"  id="span_username" > 用户</span>
+                    <b class="caret"></b>
+                </a>
+                <!--用户下拉框-->
+                <ul class="dropdown-menu"  id="noneuserDropdown">
+                    <li >
+                        <a  href="Register.html">注册</a>
+                    </li>
+                    <li >
+                        <a  href="Login.html">登录</a>
+                    </li>
+
+                </ul>
+
+                <ul class="dropdown-menu" id="userDropdown">
+                    <li>
+
+                        <a role="button" onclick="userLogout()"><span class="glyphicon glyphicon-off" > 退出</span></a>
+                    </li>
+
+                </ul>
+            </li>
+        </ul>
+        <ul class="nav navbar-nav navbar-left">
+            <li class="active">
+                <a href="main.html">
+                    <span class="glyphicon glyphicon-globe navSpan" > 今日大盘</span>
+                </a>
+            </li>
+            <li class="active">
+                <a href="compare_stock.html">
+                    <span class="glyphicon glyphicon-cog  navSpan" > 股票比较</span>
+                </a>
+            </li>
+            <li class="active">
+                <a href="strategy.html">
+                    <span class="glyphicon glyphicon-eye-open  navSpan" > 策略分析</span>
+                </a>
+            </li>
+            <li class="active">
+                <a href="MarketTemper.html">
+                    <span class="glyphicon glyphicon-map-marker navSpan" > 市场温度计</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+</nav>
+<div id="blank"></div>
+
+</body>
+
+<!--注册主界面-->
+<div class="container">
+          <h1 style="text-align: center">用户注册</h1>
+    <hr>
+    <div class="col-md-4 col-lg-offset-4" id="UserRegister">
+        <form class="bs-example bs-example-form" role="form">
+
+            <div class="input-group">
+                <span class="glyphicon glyphicon-user input-group-addon"></span>
+                <input type="text" class="form-control " placeholder="用户名(不允许%*$等非法字符)" id="userName">
+            </div>
+
+            <br>
+            <div class="input-group">
+                <span class="glyphicon glyphicon-lock input-group-addon" > </span>
+                <input type="password" class="form-control" placeholder="密码为6位数字" id="userPassword">
+
+            </div>
+
+        </form>
+        <button class="btn btn-primary" id="registBtn">注册</button>
+
+        <!-- 模态框（Modal） 用户名为空 -->
+        <div class="modal fade" id="emptyUser" tabindex="-1" role="dialog" aria-labelledby="emptyUserLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title" id="emptyUserLabel">很遗憾 注册失败...</h4>
+                    </div>
+                    <div class="modal-body" style="font-size: 18px">您的用户名不能为空！！</div>
+                    <!--<div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                        <button type="button" class="btn btn-primary">提交更改</button>
+                    </div>-->
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal -->
+        </div>
+
+        <!-- 模态框（Modal） 密码为空 -->
+        <div class="modal fade" id="emptyPass" tabindex="-1" role="dialog" aria-labelledby="emptyPassLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title" id="emptyPassLabel">很遗憾 注册失败...</h4>
+                    </div>
+                    <div class="modal-body" style="font-size: 18px">您的密码不能为空！！</div>
+                    <!--<div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                        <button type="button" class="btn btn-primary">提交更改</button>
+                    </div>-->
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal -->
+        </div>
+
+        <!-- 模态框（Modal） 用户名包含非法字符 -->
+        <div class="modal fade" id="illegalUser" tabindex="-1" role="dialog" aria-labelledby="illegalUserLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title" id="illegalUserLabel">很遗憾 注册失败...</h4>
+                    </div>
+                    <div class="modal-body" style="font-size: 18px">您的用户名包含非法字符！！</div>
+                    <!--<div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                        <button type="button" class="btn btn-primary">提交更改</button>
+                    </div>-->
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal -->
+        </div>
+
+        <!-- 模态框（Modal） 密码长度不对 -->
+        <div class="modal fade" id="illegalLen" tabindex="-1" role="dialog" aria-labelledby="illegalLenLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title" id="illegalLenLabel">很遗憾 注册失败...</h4>
+                    </div>
+                    <div class="modal-body" style="font-size: 18px">您的密码长度不是6位！！</div>
+                    <!--<div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                        <button type="button" class="btn btn-primary">提交更改</button>
+                    </div>-->
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal -->
+        </div>
+
+        <!-- 模态框（Modal） 密码包含非数字 -->
+        <div class="modal fade" id="illegalPass" tabindex="-1" role="dialog" aria-labelledby="illegalPassLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title" id="illegalPassLabel">很遗憾 注册失败...</h4>
+                    </div>
+                    <div class="modal-body" style="font-size: 18px">您的密码包含非数字！！</div>
+                    <!--<div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                        <button type="button" class="btn btn-primary">提交更改</button>
+                    </div>-->
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal -->
+        </div>
+
+        <!-- 模态框（Modal） 注册成功 -->
+        <div class="modal fade" id="Success" tabindex="-1" role="dialog" aria-labelledby="SuccessLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title" id="SuccessLabel">恭喜您</h4>
+                    </div>
+                    <div class="modal-body" style="font-size: 18px">
+                        <span class="glyphicon glyphicon-heart" style="color: rgb(255, 140, 60);"> 注册成功</span></div>
+                    <!--<div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                        <button type="button" class="btn btn-primary">提交更改</button>
+                    </div>-->
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal -->
+        </div>
+
+        <!-- 模态框（Modal） 注册失败 用户重复 -->
+        <div class="modal fade" id="Reapeat" tabindex="-1" role="dialog" aria-labelledby="ReapeatLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title" id="ReapeatLabel">注册失败</h4>
+                    </div>
+                    <div class="modal-body" style="font-size: 18px">
+                        <span class="glyphicon glyphicon-remove" style="color: #A83847;"> 用户名已存在</span></div>
+                    <!--<div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                        <button type="button" class="btn btn-primary">提交更改</button>
+                    </div>-->
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal -->
+        </div>
+
+    </div>
+
+</div>
+
+
+</html>

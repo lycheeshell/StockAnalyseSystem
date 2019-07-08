@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+
+
+    <!--Bootstrap with DataTables -->
+    <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/select/1.2.2/js/dataTables.select.min.js"></script>
+    <script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.3.1/js/dataTables.buttons.min.js"></script>
+    <script type="text/javascript" src="../js/bootstrap-datepicker.js"></script>
+    <script type="text/javascript" src="https://img.hcharts.cn/highstock/highstock.js"></script>
+    <script type="text/javascript" src="https://img.hcharts.cn/highcharts/modules/exporting.js"></script>
+    <script type="text/javascript" src="https://img.hcharts.cn/highcharts-plugins/highcharts-zh_CN.js"></script>
+    <script type="text/javascript" src="https://img.hcharts.cn/highcharts/highcharts-more.js"></script>
+    <script type="text/javascript" src="../js/tool.js"></script>
+    <script type="text/javascript" src="../js/strategy.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css " href="https://cdn.datatables.net/1.10.15/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" type="text/css" href="../css/main.css">
+    <link rel="stylesheet" type="text/css" href="../css/datepicker.css">
+    <title>Title</title>
+
+    <style>
+        #choose_plate {
+            position:absolute;
+            right:10px;
+        }
+        #choose_ST {
+            position:absolute;
+            right:10px;
+        }
+        div#total{position:relative;z-index:0}
+        div#mom_a_and_c{position:absolute;z-index:1}
+        div#mom_b{position:absolute;z-index:1}
+        div#ave_a_and_c{position:absolute;z-index:1}
+        div#ave_b{position:absolute;z-index:1}
+        div#mom_picture_a{position:absolute;z-index:2}
+        div#mom_picture_c{position:absolute;z-index:2}
+        div#ave_picture_a{position:absolute;z-index:2}
+        div#ave_picture_c{position:absolute;z-index:2}
+        div#mom_picture_aa{position:absolute;z-index:3}
+        div#ave_picture_aa{position:absolute;z-index:3}
+    </style>
+</head>
+<body>
+<nav class="navbar  nav-allIn " id="nav_bar"  role="navigation">
+    <div>
+        <ul class="nav navbar-nav navbar-right">
+            <li class="dropdown" >
+                <a  role="button" class="dropdown-toggle"   data-toggle="dropdown" id="username">
+
+                    <span class="glyphicon glyphicon-user navSpan" id="span_username"> 用户</span>
+                    <b class="caret"></b>
+                </a>
+                <!--用户下拉框-->
+                <ul class="dropdown-menu"  id="noneuserDropdown">
+                    <li >
+                        <a  href="Register.html">注册</a>
+                    </li>
+                    <li >
+                        <a  href="Login.html">登录</a>
+                    </li>
+
+                </ul>
+
+                <ul class="dropdown-menu" id="userDropdown">
+                    <li >
+                        <a  href="#" onclick="to_personal_homepage()">个人主页</a>
+                    </li>
+                    <li>
+
+                        <a role="button" onclick="userLogout()"><span class="glyphicon glyphicon-off" > 退出</span></a>
+                    </li>
+
+                </ul>
+            </li>
+        </ul>
+        <ul class="nav navbar-nav navbar-left">
+            <li class="active">
+                <a href="main.html">
+                    <span class="glyphicon glyphicon-globe navSpan" > 今日大盘</span>
+                </a>
+            </li>
+            <li class="active">
+                <a href="compare_stock.html">
+                    <span class="glyphicon glyphicon-cog  navSpan" > 股票比较</span>
+                </a>
+            </li>
+            <li class="active">
+                <a href="strategy.html">
+                    <span class="glyphicon glyphicon-eye-open  navSpan" > 策略分析</span>
+                </a>
+            </li>
+            <li class="active">
+                <a href="MarketTemper.html">
+                    <span class="glyphicon glyphicon-map-marker navSpan" > 市场温度计</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+</nav>
+<div id="blank"></div>
+
+<!-- 模态框（Modal） 保存策略失败(不属于策略) -->
+<div class="modal fade" id="failSave1" tabindex="-1" role="dialog" aria-labelledby="failSave1Label" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="failSave1Label" style="color: #4D1930">保存策略失败...</h4>
+            </div>
+            <div class="modal-body" style="font-size: 18px">当前图表不属于策略~~</div>
+            <!--<div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary">提交更改</button>
+            </div>-->
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+
+<!-- 模态框（Modal） 保存策略失败(无可保存策略) -->
+<div class="modal fade" id="failSave2" tabindex="-1" role="dialog" aria-labelledby="failSave2Label" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="failSave2Label" style="color: #4D1930">保存策略失败...</h4>
+            </div>
+            <div class="modal-body" style="font-size: 18px">并没有策略可以保存哦~~</div>
+            <!--<div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary">提交更改</button>
+            </div>-->
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+
+<!-- 模态框（Modal） 开始日期比结束日期晚 -->
+<div class="modal fade" id="illegalTime" tabindex="-1" role="dialog" aria-labelledby="illegalTimeLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="illegalTimeLabel" style="color:#4D1930">查询失败...</h4>
+            </div>
+            <div class="modal-body" style="font-size: 18px">仔细检查一下日期~~~</div>
+            <!--<div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary">提交更改</button>
+            </div>-->
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+
+<!-- 模态框（Modal） 输入不完整 -->
+<div class="modal fade" id="inputEmpty" tabindex="-1" role="dialog" aria-labelledby="inputEmptyLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="inputEmptyLabel" style="color:#4D1930">查询失败...</h4>
+            </div>
+            <div class="modal-body" style="font-size: 18px">您的输入不太完整~~~</div>
+            <!--<div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary">提交更改</button>
+            </div>-->
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+
+<!-- 模态框（Modal） 未选择股票池 -->
+<div class="modal fade" id="unSelect" tabindex="-1" role="dialog" aria-labelledby="unSelectLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="unSelectLabel" style="color:#4D1930">查询失败...</h4>
+            </div>
+            <div class="modal-body" style="font-size: 18px">您还没选股票池~~~</div>
+            <!--<div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary">提交更改</button>
+            </div>-->
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+
+<!-- 模态框（Modal） 保存失败 -->
+<div class="modal fade" id="failSave3" tabindex="-1" role="dialog" aria-labelledby="failSave3Label" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="failSave3Label" style="color:#4D1930">保存失败...</h4>
+            </div>
+            <div class="modal-body" style="font-size: 18px">很遗憾 策略保存失败</div>
+            <!--<div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary">提交更改</button>
+            </div>-->
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+
+<!-- 模态框（Modal） 自选股数量不足 -->
+<div class="modal fade" id="numLess" tabindex="-1" role="dialog" aria-labelledby="numLessLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="numLessLabel" style="color:#4D1930">查询失败...</h4>
+            </div>
+            <div class="modal-body" style="font-size: 18px">自选股票池数量不足100...</div>
+            <!--<div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary">提交更改</button>
+            </div>-->
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+
+<!-- 模态框（Modal） 成功 -->
+<div class="modal fade" id="successSave" tabindex="-1" role="dialog" aria-labelledby="successSaveLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="successSaveLabel" style="color:#CDCF6E">保存成功！</h4>
+            </div>
+            <div class="modal-body" style="font-size: 18px">成功保存入策略历史</div>
+            <!--<div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary">提交更改</button>
+            </div>-->
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+
+<!-- 模态框（Modal） 成功 -->
+<div class="modal fade" id="processData" tabindex="-1" role="dialog" aria-labelledby="processDataLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="processDataLabel" style="color:#CDCF6E">查询成功！</h4>
+            </div>
+            <div class="modal-body" style="font-size: 18px">数据正在飞速赶来~~~</div>
+            <!--<div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary">提交更改</button>
+            </div>-->
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+
+<div  class="modal fade " id="myModal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel">保存该策略？</h4>
+            </div>
+            <div class="modal-body"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" onclick="save_strategy()">保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+    <div class="container">
+        <div class="row clearfix">
+            <div class="col-md-4 column">
+                <div style="text-align:center;">
+                    <h2>股票池</h2>
+                </div>
+                <br/>
+                <div>
+                    <span class="h4">板块选择</span>
+                    <div class="btn-group" id="choose_plate">
+                        <a class="btn dropdown-toggle" data-toggle="dropdown" href="#" id="chosen_plate">
+                            请选择
+                            <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <!-- dropdown menu links -->
+                            <li><a href="#">主板</a></li>
+                            <li><a href="#">中小板</a></li>
+                            <li><a href="#">创业板</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <br/>
+                <div>
+                    <span class="h4">ST股票</span>
+                    <div class="btn-group" id="choose_ST">
+                        <a class="btn dropdown-toggle" data-toggle="dropdown" href="#" id="chosen_st">
+                            请选择
+                            <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <!-- dropdown menu links -->
+                            <li><a href="#">包含</a></li>
+                            <li><a href="#">排除</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <hr>
+                <div style="text-align:center;">
+                    <h2>自选股票</h2>
+                    <h4>按shift快速多选</h4>
+                    <div>
+                    <table cellpadding="0" cellspacing="0" border="0" class="display" id="example" width="100%">
+                        <thead>
+                        <tr>
+                            <th style="text-align:center;">股票代码</th>
+                            <th style="text-align:center;">股票名称</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        </tbody>
+                    </table>
+                    </div>
+                </div>
+                <div style="text-align:center;">
+                    <h2>已选股票</h2>
+                    <div>
+                        <table cellpadding="0" cellspacing="0" border="0" class="display" id="self_pool" width="100%">
+                            <thead>
+                            <tr>
+                                <th style="text-align:center;">股票代码</th>
+                                <th style="text-align:center;">股票名称</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div>
+                    <div  class="pull-left">
+                        <button type="button" class="btn btn-primary" id="save_button" onclick="decide_pool()">选择</button>
+                    </div>
+                    <div  class="pull-right">
+                        <button type="button" class="btn btn-default" id="cancel_button" onclick="cancel_selected()">取消</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8 column">
+                <span class="h4">策略</span>
+                <span class="btn-group">
+                    <a class="btn dropdown-toggle" data-toggle="dropdown" href="#" id="chosen_strategy">
+                        请选择
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <!-- dropdown menu links -->
+                        <li><a href="#">动量策略</a></li>
+                        <li><a href="#">均值回归</a></li>
+                    </ul>
+                </span>
+                <span class="h4">图表类型</span>
+                <span class="btn-group">
+                    <a class="btn dropdown-toggle" data-toggle="dropdown" href="#" id="chosen_picture">
+                        请选择
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <!-- dropdown menu links -->
+                        <li><a href="#">策略基准累计收益率</a></li>
+                        <li><a href="#">超额收益率/策略胜率</a></li>
+                        <li><a href="#">收益率分布</a></li>
+                    </ul>
+                </span>
+                <button  class="btn btn-default" onclick="save_strategy()" id="save_stra_button">保存策略</button>
+                <div>
+                    <br/>
+                <span class="h4">开始时间：</span><span class="well"><input type="text" class="span2" value="" id="dp1" ></span>&nbsp;&nbsp;
+                    <span class="h4">结束时间：</span><span class="well"><input type="text" class="span2" value="" id="dp2" ></span>
+                </div>
+                <div class="row" id="total" width="100%">
+                    <div class="col-md-12 column" id="mom_a_and_c"  width="100%">
+                        <br/>
+                        <span class="h4">持有期：</span>
+                        <input type="text" class="input-medium" id="mom_hold">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <span class="h4">形成期：</span>
+                        <input type="text" class="input-medium" id="mom_form">
+                        <button type="button" class="btn btn-default btn-lg" onclick="show_result_a_and_c(0)" id="button_show_a_c">展示</button>
+                        <hr>
+                        <div class="row" id="mom_picture_a" width="100%">
+                            <table cellpadding="0" cellspacing="0" border="0" class="display" id="mom_param" width="100%">
+                                <thead>
+                                <tr>
+                                    <th style="text-align:center;">年化收益率</th>
+                                    <th style="text-align:center;">基准年化收益率</th>
+                                    <th style="text-align:center;">阿尔法</th>
+                                    <th style="text-align:center;">贝塔</th>
+                                    <th style="text-align:center;">夏普比率</th>
+                                    <th style="text-align:center;">最大回撤</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+
+                                </tbody>
+                            </table>
+                            <div id="mom_picture_aa" width="100%">
+                            </div>
+                        </div>
+                        <div class="row"  id="mom_picture_c" width="100%">
+                        </div>
+                    </div>
+                    <div class="col-md-12 column"  id="mom_b" width="100%">
+                        <br/>
+                        <span class="h4">持有/形成：</span>
+                        <span class="btn-group">
+                            <a class="btn dropdown-toggle" data-toggle="dropdown" href="#" id="chosen_period">
+                            请选择<span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <!-- dropdown menu links -->
+                                <li><a href="#">持有期</a></li>
+                                <li><a href="#">形成期</a></li>
+                            </ul>
+                        </span>
+                        <input type="text" class="input-medium" id="time">
+                        <button type="button" class="btn btn-default btn-lg" onclick="show_result_b()" id="button_show_b">展示</button>
+                        <hr>
+                        <div class="row" id="mom_picture_b">
+                            <div class="col-md-6 column"  id="mom_picture_b_part1" width="100%">
+                                <table cellpadding="0" cellspacing="0" border="0" class="display" id="b_table" width="100%">
+                                    <thead>
+                                    <tr>
+                                        <th style="text-align:center;">相对强弱计算周期</th>
+                                        <th style="text-align:center;">超额收益%</th>
+                                        <th style="text-align:center;">一年胜率</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col-md-6 column"  id="mom_picture_b_part2" width="100%">
+                                <div  id="mom_picture_b_part2a" width="100%">
+
+                                </div>
+                                <div  id="mom_picture_b_part2b" width="100%">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12 column"  id="ave_a_and_c" width="100%">
+                        <br/>
+                        <span class="h4">持有期：</span>
+                        <input type="text" class="input-medium" id="ave_hold">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <span class="h4">均线类型：</span>
+                        <span class="btn-group">
+                            <a class="btn dropdown-toggle" data-toggle="dropdown" href="#" id="chosen_ave_a_and_c">
+                            请选择<span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <!-- dropdown menu links -->
+                                <li><a href="#">5日均线</a></li>
+                                <li><a href="#">10日均线</a></li>
+                                <li><a href="#">20日均线</a></li>
+                            </ul>
+                        </span>
+                        <button type="button" class="btn btn-default btn-lg" onclick="show_result_a_and_c(0)" id="ave_button_show_a_c">展示</button>
+                        <hr>
+                        <div id="ave_picture_a" width="100%">
+                            <table cellpadding="0" cellspacing="0" border="0" class="display" id="ave_param" width="100%">
+                                <thead>
+                                <tr>
+                                    <th style="text-align:center;">年化收益率</th>
+                                    <th style="text-align:center;">基准年化收益率</th>
+                                    <th style="text-align:center;">阿尔法</th>
+                                    <th style="text-align:center;">贝塔</th>
+                                    <th style="text-align:center;">夏普比率</th>
+                                    <th style="text-align:center;">最大回撤</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+
+                                </tbody>
+                            </table>
+                            <div id="ave_picture_aa" width="100%">
+                            </div>
+                        </div>
+                        <div id="ave_picture_c" width="100%">
+                        </div>
+                    </div>
+                    <div  class="col-md-12 column" id="ave_b" width="100%">
+                        <br/>
+                        <span class="h4">均线类型：</span>
+                        <span class="btn-group">
+                            <a class="btn dropdown-toggle" data-toggle="dropdown" href="#" id="chosen_ave_b">
+                            请选择<span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <!-- dropdown menu links -->
+                                <li><a href="#">5日均线</a></li>
+                                <li><a href="#">10日均线</a></li>
+                                <li><a href="#">20日均线</a></li>
+                            </ul>
+                        </span>
+                        <button type="button" class="btn btn-default btn-lg" onclick="show_result_b()" id="ave_button_show_b">展示</button>
+                        <hr>
+                        <div class="row" id="ave_picture_b">
+                            <div class="col-md-6 column"  id="ave_picture_b_part1" width="100%">
+                                <table cellpadding="0" cellspacing="0" border="0" class="display" id="ave_b_table" width="100%">
+                                    <thead>
+                                    <tr>
+                                        <th style="text-align:center;">相对强弱计算周期</th>
+                                        <th style="text-align:center;">超额收益%</th>
+                                        <th style="text-align:center;">一年胜率</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col-md-6 column"  id="ave_picture_b_part2" width="100%">
+                                <div  id="ave_picture_b_part2a" width="100%">
+
+                                </div>
+                                <div  id="ave_picture_b_part2b" width="100%">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+<script>
+    $(function(){
+        $('ul').children('li').children('a').bind('click', function(){
+            if($(this).html()=="主板"||$(this).html()=="创业板"||$(this).html()=="中小板") {
+                document.getElementById("chosen_plate").innerHTML = $(this).html();
+            }
+            if($(this).html()=="包含"||$(this).html()=="排除") {
+                document.getElementById("chosen_st").innerHTML = $(this).html();
+            }
+            if($(this).html()=="形成期"||$(this).html()=="持有期"){
+                document.getElementById("chosen_period").innerHTML = $(this).html();
+            }
+            if($(this).html()=="5日均线"||$(this).html()=="10日均线"||$(this).html()=="20日均线"){
+                document.getElementById("chosen_ave_b").innerHTML = $(this).html();
+                document.getElementById("chosen_ave_a_and_c").innerHTML = $(this).html();
+            }
+            if($(this).html()=="动量策略"||$(this).html()=="均值回归") {
+                document.getElementById("chosen_strategy").innerHTML = $(this).html();
+                if($(this).html()=="动量策略"){
+                    $('#ave_a_and_c').css('display', 'none');
+                    $('#ave_b').css('display','none');
+                    $('#ave_picture_a').css('display','none');
+                    $('#ave_picture_c').css('display','none');
+                    $('#ave_picture_aa').css('display','none');
+                }
+                if($(this).html()=="均值回归"){
+                    $('#mom_a_and_c').css('display', 'none');
+                    $('#mom_b').css('display','none');
+                    $('#mom_picture_a').css('display','none');
+                    $('#mom_picture_c').css('display','none');
+                    $('#mom_picture_aa').css('display','none');
+                }
+                //--------------------------------------------------------------------------------------
+                if(document.getElementById("chosen_strategy").innerHTML=="动量策略") {
+                    $('#ave_a_and_c').css('display', 'none');
+                    $('#ave_b').css('display','none');
+                    $('#ave_picture_a').css('display','none');
+                    $('#ave_picture_c').css('display','none');
+                    $('#ave_picture_aa').css('display','none');
+                    if (document.getElementById("chosen_picture").innerHTML == "超额收益率/策略胜率") {
+                        $('#mom_a_and_c').css('display', 'none');
+                        $('#mom_b').css('display', 'block');
+                    }
+                    if (document.getElementById("chosen_picture").innerHTML == "策略基准累计收益率" || document.getElementById("chosen_picture").innerHTML == "收益率分布") {
+                        $('#mom_a_and_c').css('display', 'block');
+                        $('#mom_b').css('display', 'none');
+                        if (document.getElementById("chosen_picture").innerHTML == "策略基准累计收益率") {
+                            $('#mom_picture_a').css('display', 'block');
+                            $('#mom_picture_c').css('display', 'none');
+                            $('#mom_picture_aa').css('display', 'block');
+                        }
+                        else {
+                            $('#mom_picture_c').css('display', 'block');
+                            $('#mom_picture_a').css('display', 'none');
+                            $('#mom_picture_aa').css('display', 'none');
+                        }
+                    }
+                }
+                if(document.getElementById("chosen_strategy").innerHTML=="均值回归"){
+                    $('#mom_a_and_c').css('display', 'none');
+                    $('#mom_b').css('display','none');
+                    $('#mom_picture_a').css('display','none');
+                    $('#mom_picture_c').css('display','none');
+                    $('#mom_picture_aa').css('display','none');
+                    if (document.getElementById("chosen_picture").innerHTML == "超额收益率/策略胜率") {
+                        $('#ave_a_and_c').css('display', 'none');
+                        $('#ave_b').css('display', 'block');
+                    }
+                    if (document.getElementById("chosen_picture").innerHTML == "策略基准累计收益率" || document.getElementById("chosen_picture").innerHTML == "收益率分布") {
+                        $('#ave_a_and_c').css('display', 'block');
+                        $('#ave_b').css('display', 'none');
+                        if (document.getElementById("chosen_picture").innerHTML == "策略基准累计收益率") {
+                            $('#ave_picture_a').css('display', 'block');
+                            $('#ave_picture_c').css('display', 'none');
+                            $('#ave_picture_aa').css('display', 'block');
+                        }
+                        else {
+                            $('#ave_picture_c').css('display', 'block');
+                            $('#ave_picture_a').css('display', 'none');
+                            $('#ave_picture_aa').css('display', 'none');
+                        }
+                    }
+                }
+                //--------------------------------------------------------------------------------------
+            }
+            if($(this).html()=="策略基准累计收益率"||$(this).html()=="超额收益率/策略胜率"||$(this).html()=="收益率分布") {
+                document.getElementById("chosen_picture").innerHTML = $(this).html();
+                if(document.getElementById("chosen_strategy").innerHTML=="动量策略") {
+                    $('#ave_a_and_c').css('display', 'none');
+                    $('#ave_b').css('display','none');
+                    $('#ave_picture_a').css('display','none');
+                    $('#ave_picture_c').css('display','none');
+                    $('#ave_picture_aa').css('display','none');
+                    if ($(this).html() == "超额收益率/策略胜率") {
+                        $('#mom_a_and_c').css('display', 'none');
+                        $('#mom_b').css('display', 'block');
+                    }
+                    if ($(this).html() == "策略基准累计收益率" || $(this).html() == "收益率分布") {
+                        $('#mom_a_and_c').css('display', 'block');
+                        $('#mom_b').css('display', 'none');
+                        if ($(this).html() == "策略基准累计收益率") {
+                            $('#mom_picture_a').css('display', 'block');
+                            $('#mom_picture_c').css('display', 'none');
+                            $('#mom_picture_aa').css('display', 'block');
+                        }
+                        else {
+                            $('#mom_picture_c').css('display', 'block');
+                            $('#mom_picture_a').css('display', 'none');
+                            $('#mom_picture_aa').css('display', 'none');
+                        }
+                    }
+                }
+                else if(document.getElementById("chosen_strategy").innerHTML=="均值回归"){
+                    $('#mom_a_and_c').css('display', 'none');
+                    $('#mom_b').css('display','none');
+                    $('#mom_picture_a').css('display','none');
+                    $('#mom_picture_c').css('display','none');
+                    $('#mom_picture_aa').css('display','none');
+                    if ($(this).html() == "超额收益率/策略胜率") {
+                        $('#ave_a_and_c').css('display', 'none');
+                        $('#ave_b').css('display', 'block');
+                    }
+                    if ($(this).html() == "策略基准累计收益率" || $(this).html() == "收益率分布") {
+                        $('#ave_a_and_c').css('display', 'block');
+                        $('#ave_b').css('display', 'none');
+                        if ($(this).html() == "策略基准累计收益率") {
+                            $('#ave_picture_a').css('display', 'block');
+                            $('#ave_picture_c').css('display', 'none');
+                            $('#ave_picture_aa').css('display', 'block');
+                        }
+                        else {
+                            $('#ave_picture_c').css('display', 'block');
+                            $('#ave_picture_a').css('display', 'none');
+                            $('#ave_picture_aa').css('display', 'none');
+                        }
+                    }
+                }
+                else{
+                    alert("请选择回测策略");
+                }
+            }
+        });
+    });
+</script>
+<script>
+    $('#dp1').datepicker({
+        format: 'yyyy-mm-dd'
+    });
+    $('#dp2').datepicker({
+        format: 'yyyy-mm-dd'
+    });
+</script>
+<script>
+    function show_result_b() {
+        $("#processData").modal();
+        if(document.getElementById("chosen_strategy").innerHTML=="动量策略"&&document.getElementById("chosen_picture").innerHTML=="超额收益率/策略胜率") {
+            get_mom_b();
+            /*
+            res={"isHoldingPeriod":1,
+                "BItemList":[
+                    [1, -8.24, 46.94],
+                    [2, -8.24, 46.94],
+                    [3, -8.24, 46.94],
+                    [4, -8.24, 46.94],
+                    [5, -8.24, 46.94],
+                    [6, -8.24, 46.94],
+                    [7, -8.24, 46.94],
+                    [8, -8.24, 46.94],
+                    [9, -8.24, 46.94],
+                    [10, -8.24, 46.94],
+                    [11, -8.24, 46.94],
+                    [12, -8.24, 46.94],
+                    [13, -8.24, 46.94],
+                    [14, -8.24, 46.94],
+                    [15, -8.24, 46.94],
+                    [16, -8.24, 46.94],
+                    [17, -8.24, 46.94],
+                    [18, -8.24, 46.94],
+                    [19, -8.24, 46.94],
+                    [20, -8.24, 46.94],
+                    [21, -8.24, 46.94],
+                    [22, -8.24, 46.94],
+                    [23, -8.24, 46.94],
+                    [24, -8.24, 46.94],
+                    [25, -8.24, 46.94]
+                ]};*/
+        }
+        if(document.getElementById("chosen_strategy").innerHTML=="均值回归"&&document.getElementById("chosen_picture").innerHTML=="超额收益率/策略胜率") {
+            $(function () {
+                $('#ave_b_table').dataTable().fnDestroy();
+                get_ave_b();
+                /*
+                res={"isHoldingPeriod":1,
+                    "BItemList":[
+                        [1, -8.24, 46.94],
+                        [2, -8.24, 46.94],
+                        [3, -8.24, 46.94],
+                        [4, -8.24, 46.94],
+                        [5, -8.24, 46.94],
+                        [6, -8.24, 46.94],
+                        [7, -8.24, 46.94],
+                        [8, -8.24, 46.94],
+                        [9, -8.24, 46.94],
+                        [10, -8.24, 46.94],
+                        [11, -8.24, 46.94],
+                        [12, -8.24, 46.94],
+                        [13, -8.24, 46.94],
+                        [14, -8.24, 46.94],
+                        [15, -8.24, 46.94],
+                        [16, -8.24, 46.94],
+                        [17, -8.24, 46.94],
+                        [18, -8.24, 46.94],
+                        [19, -8.24, 46.94],
+                        [20, -8.24, 46.94],
+                        [21, -8.24, 46.94],
+                        [22, -8.24, 46.94],
+                        [23, -8.24, 46.94],
+                        [24, -8.24, 46.94],
+                        [25, -8.24, 46.94]
+                    ]};*/
+            });
+        }
+    }
+</script>
+<script>
+    function show_result_a_and_c(data) {
+        $("#processData").modal();
+        if(document.getElementById("chosen_strategy").innerHTML=="动量策略") {
+            if(data!=0){
+                get_mom_ac(data);
+            }
+            else {
+                get_mom_ac(0);
+            }
+        }
+        if(document.getElementById("chosen_strategy").innerHTML=="均值回归") {
+            if(data!=0){
+                get_ave_ac(data);
+            }
+            else {
+                get_ave_ac(0);
+            }
+        }
+    }
+</script>
+<script>
+
+    $(document).ready(function() {
+        $('#mom_a_and_c').css('display', 'none');
+        $('#mom_picture_a').css('display', 'none');
+        $('#mom_picture_c').css('display','none');
+        $('#mom_b').css('display','none');
+        $('#ave_a_and_c').css('display', 'none');
+        $('#ave_picture_a').css('display', 'none');
+        $('#ave_picture_c').css('display','none');
+        $('#ave_b').css('display','none');
+        $('#mom_param').dataTable().fnDestroy();
+        $('#mom_param').DataTable( {
+            "bInfo":false,
+            "bFilter": false,
+            "paging":         false,
+            "aaData": [
+                [ "xxx", "xxx","xxx","xxx","xxx","xxx"]
+            ]
+        } );
+        $('#ave_param').dataTable().fnDestroy();
+        $('#ave_param').DataTable( {
+            "bInfo":false,
+            "bFilter": false,
+            "paging":         false,
+            "aaData": [
+                [ "xxx", "xxx","xxx","xxx","xxx","xxx"]
+            ]
+        } );
+        $.ajax({
+            type:'get',
+            url:'/oneStock/getAllStock',
+            success:function (data){
+                init_stock_pool(data);
+            },
+            error:function () {
+                alert("股票列表获取失败");
+            }
+        });
+        showvalf();
+        if(document.getElementById('span_username').innerHTML == "用户"){
+            document.getElementById("save_stra_button").disabled=true;
+        }
+        initPersonStockPool();
+    });
+
+</script>
+</body>
+</html>

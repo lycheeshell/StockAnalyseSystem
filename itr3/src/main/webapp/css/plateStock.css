@@ -1,0 +1,9 @@
+#plateName{
+    font-family: "Arial","Microsoft YaHei","黑体","宋体",sans-serif;
+    color: #336D99;
+    font-size: 50px;
+    padding-left: 40%;
+    padding-top: 50%;
+    -webkit-writing-mode: vertical-lr;
+    writing-mode: vertical-lr;
+}

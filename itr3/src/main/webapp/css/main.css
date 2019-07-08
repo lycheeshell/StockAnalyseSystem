@@ -1,0 +1,53 @@
+
+
+#nav_bar{
+    padding-right: 15px;
+    box-shadow: 0px 5px 40px #C9EAED;
+
+}
+
+#blank{
+    height: 60px;
+}
+
+.nav-allIn{
+    background-color: #47A7C2;
+    border-color: #47A7C2;
+}
+
+.navSpan{
+    /*font-family: 'STXihei';*/
+    color: #fff;
+
+}
+
+.navSpan:hover{
+    color:#DBAD94;
+    -webkit-transition: color .5s;
+}
+
+.recommend{
+    margin-top: 15px;
+    font-size: 15px;
+}
+
+.recommendRate{
+    color: #BB3E66;
+}
+
+.recommendName{
+    color: #384DA8;
+}
+
+.recommendName:hover{
+    text-decoration: underline;
+}
+
+.selected{
+    color: #2aabd2;
+}
+
+.gotoSee:hover{
+    color: rebeccapurple;
+    text-decoration: underline;
+}

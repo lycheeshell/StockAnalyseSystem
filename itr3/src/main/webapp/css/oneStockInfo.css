@@ -1,0 +1,39 @@
+#favoriteStock{
+    color: #fff;
+    font-size: 30px;
+    padding-top: 30px;
+}
+#addPersonStock{
+    color: #fff;
+    font-size: 30px;
+    padding-top: 10px;
+    padding-right: 37px;
+}
+
+#favoriteStock:hover{
+    color: #E4AFD3;
+
+}
+
+#addPersonStock:hover{
+    color: #40BF77;
+}
+
+#clickToK{
+    left: 300px;
+    font-size: 45px;
+    top:160px;
+    color:#3CA6B4;
+}
+
+
+.company{
+    color:#29457A;font-size: 15px
+}
+
+p.company{
+    text-align: center;
+    font-size: 18px;
+}
+ .tooltip > .tooltip-inner {background-color: #A38CD9; color: #F6FBF4;}
+

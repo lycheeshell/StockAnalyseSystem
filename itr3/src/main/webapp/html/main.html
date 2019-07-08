@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+
+
+    <!--Bootstrap with DataTables -->
+    <script type="text/javascript" src="../js/jquery-2.1.4.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap.min.js"></script>
+
+    <script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.15/b-colvis-1.3.1/b-flash-1.3.1/b-print-1.3.1/sc-1.4.2/se-1.2.2/datatables.min.css"/>
+
+    <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.15/b-colvis-1.3.1/b-flash-1.3.1/b-print-1.3.1/sc-1.4.2/se-1.2.2/datatables.min.js"></script>
+    <link rel="stylesheet" type="text/css " href="https://cdn.datatables.net/1.10.15/css/dataTables.bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="../css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="../css/main.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.3.1/css/buttons.dataTables.min.css">
+    <script src="../js/echarts.min.js" type="text/javascript"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/select/1.2.2/js/dataTables.select.min.js"></script>
+    <script type="text/javascript" src="../js/CreatTable.js"></script>
+    <script type="text/javascript" src="../js/tool.js"></script>
+    <script type="text/javascript" src="../js/MarketTemper.js"></script>
+
+    <script type="text/javascript" src="../js/main.js"></script>
+
+
+   <!-- <script src="http://cdn.bootcss.com/echarts/3.5.4/echarts.common.js" type="text/javascript"></script>-->
+    <title>Title</title>
+</head>
+<body>
+<nav class="navbar  nav-allIn " id="nav_bar"  role="navigation">
+    <div>
+        <ul class="nav navbar-nav navbar-right">
+            <li class="dropdown" >
+                <a  role="button" class="dropdown-toggle"   data-toggle="dropdown">
+
+                    <span class="glyphicon glyphicon-user navSpan" id="span_username"> 用户</span>
+                    <b class="caret"></b>
+                </a>
+                <!--用户下拉框-->
+                <ul class="dropdown-menu"  id="noneuserDropdown">
+                    <li >
+                        <a  href="Register.html">注册</a>
+                    </li>
+                    <li >
+                        <a  href="Login.html">登录</a>
+                    </li>
+
+                </ul>
+
+                <ul class="dropdown-menu" id="userDropdown">
+                    <li >
+                        <a  href="#" onclick="to_personal_homepage()">个人主页</a>
+                    </li>
+                    <li>
+                        <a role="button" onclick="userLogout()"><span class="glyphicon glyphicon-off" > 退出</span></a>
+                    </li>
+
+                </ul>
+            </li>
+        </ul>
+        <ul class="nav navbar-nav navbar-left">
+            <li class="active">
+                <a href="main.html">
+                    <span class="glyphicon glyphicon-globe navSpan" > 今日大盘</span>
+                </a>
+            </li>
+            <li class="active">
+                <a href="compare_stock.html">
+                    <span class="glyphicon glyphicon-cog  navSpan" > 股票比较</span>
+                </a>
+            </li>
+            <li class="active">
+                <a href="strategy.html">
+                    <span class="glyphicon glyphicon-eye-open  navSpan" > 策略分析</span>
+                </a>
+            </li>
+            <li class="active">
+                <a href="MarketTemper.html">
+                    <span class="glyphicon glyphicon-map-marker navSpan" > 市场温度计</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+</nav>
+<div id="blank"></div>
+
+
+
+<div class="container" >
+    <div class="row">
+        <!--大盘K线图-->
+        <div class="col-md-8"  id="K_Chart" style="height:400px;">
+
+        </div>
+        <!--今日推荐股票-->
+        <div class="col-md-4 "  id="TodayBestStock" style="height:400px;background-color: #79D2AF">
+            <h1 style="color: #25656F"><strong>今日推荐股票</strong></h1>
+            <hr>
+            <div class="row recommend">
+                <div class="col-md-8 recommendName" id="recommendName1" role="button"></div>
+                <div class="col-md-4 recommendRate">
+                    <span class="glyphicon glyphicon-arrow-up" id="recommendRate1" > </span>
+                </div>
+            </div>
+            <div class="row recommend">
+                <div class="col-md-8 recommendName" id="recommendName2" role="button"></div>
+                <div class="col-md-4 recommendRate">
+                    <span class="glyphicon glyphicon-arrow-up" id="recommendRate2"> </span>
+                </div>
+            </div>
+            <div class="row recommend">
+                <div class="col-md-8 recommendName" id="recommendName3" role="button"></div>
+                <div class="col-md-4 recommendRate">
+                    <span class="glyphicon glyphicon-arrow-up" id="recommendRate3"> </span>
+                </div>
+            </div>
+            <div class="row recommend">
+                <div class="col-md-8 recommendName" id="recommendName4" role="button" ></div>
+                <div class="col-md-4 recommendRate">
+                    <span class="glyphicon glyphicon-arrow-up" id="recommendRate4"> </span>
+                </div>
+            </div>
+            <div class="row recommend">
+                <div class="col-md-8 recommendName" id="recommendName5" role="button"></div>
+                <div class="col-md-4 recommendRate">
+                    <span class="glyphicon glyphicon-arrow-up"  id="recommendRate5"> </span>
+                </div>
+            </div>
+        </div>
+       <!-- <script>
+            $('.recommendName').bind('click',function () {
+                document.getElementById("recommendName2").innerHTML="变身！！！"
+            });
+        </script>-->
+
+    </div>
+
+</div>
+<hr>
+
+<!--股票列表-->
+
+<div class="container">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <div class="panel-title">
+                沪深股票列表
+            </div>
+        </div>
+        <div class="panel-body">
+            <table id="table_local" class="table table-bordered  table-hover ">
+                <thead>
+                <tr>
+                    <th>股票名称</th>
+                    <th>股票代码</th>
+                    <th>开盘价</th>
+                    <th>收盘价</th>
+                    <th>最高价</th>
+                    <th>最低价</th>
+                    <th>涨跌幅</th>
+                </tr>
+                </thead>
+
+                <tbody>
+
+                </tbody>
+                <tfoot>
+
+                </tfoot>
+
+            </table>
+        </div>
+        <div class="pull-right">
+            <button id="addPersonStock"  type="button" class="btn btn-primary" >添加到自选股票池</button>
+        </div>
+    </div>
+</div>
+</body>
+
+<script>
+
+    var myChart = echarts.init(document.getElementById('K_Chart'));
+    // 指定图表的配置项和数据
+    // 数据意义：开盘(open)，收盘(close)，最低(lowest)，最高(highest)
+    var data0=[];
+
+    var dataChart;
+
+
+    var Kmap;
+
+    var KmapNum;
+    $.ajax({
+        type:'post',
+        url:'/main/getMainK',
+        success:function (data){
+            var temp=data.MainK;
+
+
+            KmapNum=data.MainKNum;
+            data0=new Array(KmapNum);
+            var dataAdd=[];//赋值给data0的数组
+            var tempDate=[];
+            var dataDate=[];//记录交易日时间
+            var dataData=[];//记录交易日数据
+            var time;
+            dataDate=data.MainKDate;
+
+            for(var i= 0 ;i< dataDate.length;i++)
+            {
+
+                time=dataDate[i];
+                tempDate=dataDate[i].split('-');
+
+                data0[i]=new Array();
+                data0[i][0]   =tempDate[0]+"/"+tempDate[1]+"/"+tempDate[2];
+
+
+                dataData=temp[time];
+
+                for(var j = 0;j<4;j++)
+                {
+
+                    data0[i][j+1]   =parseFloat(dataData[j].toFixed(2));
+                }
+
+            }
+
+
+
+            dataChart=splitData(data0);
+
+
+            option = {
+                title: {
+                    text: '沪深300',
+                    left: 0
+                },
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: {
+                        type: 'line'
+                    }
+                },
+                legend: {
+                    data: ['日K', 'MA5', 'MA10', 'MA20', 'MA30']
+                },
+                grid: {
+                    left: '10%',
+                    right: '10%',
+                    bottom: '15%'
+                },
+                xAxis: {
+                    type: 'category',
+                    data: dataChart.categoryData,
+                    scale: true,
+                    boundaryGap : false,
+                    axisLine: {onZero: false},
+                    splitLine: {show: false},
+                    splitNumber: 20,
+                    min: 'dataMin',
+                    max: 'dataMax'
+                },
+                yAxis: {
+                    scale: true,
+                    splitArea: {
+                        show: true
+                    }
+                },
+                dataZoom: [
+                    {
+                        type: 'inside',
+                        start: 50,
+                        end: 100
+                    },
+                    {
+                        show: true,
+                        type: 'slider',
+                        y: '90%',
+                        start: 50,
+                        end: 100
+                    }
+                ],
+                series: [
+                    {
+                        name: '日K',
+                        type: 'candlestick',
+                        data: dataChart.values,
+                        markPoint: {
+                            label: {
+                                normal: {
+                                    formatter: function (param) {
+                                        return param != null ? Math.round(param.value) : '';
+                                    }
+                                }
+                            },
+                            data: [
+                                {
+                                    name: 'XX标点',
+                                    coord: ['2013/5/31', 2300],
+                                    value: 2300,
+                                    itemStyle: {
+                                        normal: {color: 'rgb(41,60,85)'}
+                                    }
+                                },
+                                {
+                                    name: 'highest value',
+                                    type: 'max',
+                                    valueDim: 'highest'
+                                },
+                                {
+                                    name: 'lowest value',
+                                    type: 'min',
+                                    valueDim: 'lowest'
+                                },
+                                {
+                                    name: 'average value on close',
+                                    type: 'average',
+                                    valueDim: 'close'
+                                }
+                            ],
+                            tooltip: {
+                                formatter: function (param) {
+                                    return param.name + '<br>' + (param.data.coord || '');
+                                }
+                            }
+                        },
+                        markLine: {
+                            symbol: ['none', 'none'],
+                            data: [
+                                [
+                                    {
+                                        name: 'from lowest to highest',
+                                        type: 'min',
+                                        valueDim: 'lowest',
+                                        symbol: 'circle',
+                                        symbolSize: 10,
+                                        label: {
+                                            normal: {show: false},
+                                            emphasis: {show: false}
+                                        }
+                                    },
+                                    {
+                                        type: 'max',
+                                        valueDim: 'highest',
+                                        symbol: 'circle',
+                                        symbolSize: 10,
+                                        label: {
+                                            normal: {show: false},
+                                            emphasis: {show: false}
+                                        }
+                                    }
+                                ],
+                                {
+                                    name: 'min line on close',
+                                    type: 'min',
+                                    valueDim: 'close'
+                                },
+                                {
+                                    name: 'max line on close',
+                                    type: 'max',
+                                    valueDim: 'close'
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        name: 'MA5',
+                        type: 'line',
+                        data: calculateMA(5),
+                        smooth: true,
+                        lineStyle: {
+                            normal: {opacity: 0.5}
+                        }
+                    },
+                    {
+                        name: 'MA10',
+                        type: 'line',
+                        data: calculateMA(10),
+                        smooth: true,
+                        lineStyle: {
+                            normal: {opacity: 0.5}
+                        }
+                    },
+                    {
+                        name: 'MA20',
+                        type: 'line',
+                        data: calculateMA(20),
+                        smooth: true,
+                        lineStyle: {
+                            normal: {opacity: 0.5}
+                        }
+                    },
+                    {
+                        name: 'MA30',
+                        type: 'line',
+                        data: calculateMA(30),
+                        smooth: true,
+                        lineStyle: {
+                            normal: {opacity: 0.5}
+                        }
+                    },
+                ]
+            };
+
+            // 使用刚指定的配置项和数据显示图表。
+            myChart.setOption(option);
+        },
+        error:function () {
+            alert("获取K线数据失败！");
+        }
+    });
+
+
+    function splitData(rawData) {
+
+        var categoryData = [];
+        var values = [];
+        for (var i = 0; i < rawData.length; i++) {
+
+            categoryData.push(rawData[i].splice(0, 1)[0]);
+            values.push(rawData[i])
+        }
+
+
+        return {
+            categoryData: categoryData,
+            values: values
+        };
+    }
+    function calculateMA(dayCount) {
+        var result = [];
+        for (var i = 0, len = dataChart.values.length; i < len; i++) {
+            if (i < dayCount) {
+                result.push('-');
+                continue;
+            }
+            var sum = 0;
+            for (var j = 0; j < dayCount; j++) {
+                sum += dataChart.values[i - j][1];
+            }
+            result.push(parseFloat((sum / dayCount).toFixed(2)));
+        }
+        return result;
+    }
+
+
+
+</script>
+
+
+
+
+</html>

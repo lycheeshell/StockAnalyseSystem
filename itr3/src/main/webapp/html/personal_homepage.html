@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+
+
+    <!--Bootstrap with DataTables -->
+    <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/select/1.2.2/js/dataTables.select.min.js"></script>
+    <script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.3.1/js/dataTables.buttons.min.js"></script>
+    <script type="text/javascript" src="../js/bootstrap-datepicker.js"></script>
+    <script type="text/javascript" src="https://img.hcharts.cn/highstock/highstock.js"></script>
+    <script type="text/javascript" src="https://img.hcharts.cn/highcharts/modules/exporting.js"></script>
+    <script type="text/javascript" src="https://img.hcharts.cn/highcharts-plugins/highcharts-zh_CN.js"></script>
+    <script type="text/javascript" src="https://img.hcharts.cn/highcharts/highcharts-more.js"></script>
+    <script type="text/javascript" src="../js/personal_homepage.js"></script>
+    <script type="text/javascript" src="../js/tool.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css " href="https://cdn.datatables.net/1.10.15/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" type="text/css" href="../css/main.css">
+    <link rel="stylesheet" type="text/css" href="../css/datepicker.css">
+
+    <title>Title</title>
+
+    <style type="text/css">
+        div#a1{position:relative;}
+        div#a2{position:absolute;z-index:1}
+        div#a3{position:absolute;z-index:1}
+        div#a4{position:absolute;z-index:1}
+    </style>
+    <style type="text/css">
+        input{
+            text-align: center;
+        }
+    </style>
+</head>
+<body onload='changeDiv("a2")'>
+
+<nav class="navbar  nav-allIn " id="nav_bar"  role="navigation">
+    <div>
+        <ul class="nav navbar-nav navbar-right">
+            <li class="dropdown" >
+                <a  role="button" class="dropdown-toggle"   data-toggle="dropdown" id="username">
+
+                    <span class="glyphicon glyphicon-user navSpan" id="span_username"> 用户</span>
+                    <b class="caret"></b>
+                </a>
+                <!--用户下拉框-->
+                <ul class="dropdown-menu"  id="noneuserDropdown">
+                    <li >
+                        <a  href="Register.html">注册</a>
+                    </li>
+                    <li >
+                        <a  href="Login.html">登录</a>
+                    </li>
+
+                </ul>
+
+                <ul class="dropdown-menu" id="userDropdown">
+                    <li>
+
+                        <a role="button" onclick="userLogout()"><span class="glyphicon glyphicon-off" > 退出</span></a>
+                    </li>
+
+                </ul>
+            </li>
+        </ul>
+        <ul class="nav navbar-nav navbar-left">
+            <li class="active">
+                <a href="#" onclick="to_main()">
+                    <span class="glyphicon glyphicon-globe navSpan" > 今日大盘</span>
+                </a>
+            </li>
+            <li class="active">
+                <a href="#" onclick="to_compare_stock()">
+                    <span class="glyphicon glyphicon-cog  navSpan" > 股票比较</span>
+                </a>
+            </li>
+            <li class="active">
+                <a href="#" onclick="to_strategy()">
+                    <span class="glyphicon glyphicon-eye-open  navSpan" > 策略分析</span>
+                </a>
+            </li>
+            <li class="#" onclick="to_market_temper()">
+                <a href="MarketTemper.html">
+                    <span class="glyphicon glyphicon-map-marker navSpan" > 市场温度计</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+</nav>
+<div id="blank"></div>
+    <div class="row clearfix">
+        <!--<div class="col-xs-6 col-sm-3">-->
+        <div class="col-md-4 column" style="background-color:#F5DEB3;">
+            <ul class="nav nav-pills nav-stacked">
+                <li><a href="#" onclick='changeDiv("a2")'>个人设置</a></li>
+                <li><a href="#" onclick='changeDiv("a3")'>关注股票</a></li>
+                <li><a href="#" onclick='changeDiv("a4")'>策略历史</a></li>
+            </ul>
+        </div>
+
+        <div class="col-md-8 column" id="a1" style="text-align:center;">
+            <div id="a2">
+                <!-- 个人设置 -->
+                <h1 align="center">个人设置</h1>
+                <form class="form-horizontal" align="center">
+                    <fieldset>
+                        <legend>完善资料</legend>
+                        <div class="control-group">
+                            <label class="control-label" for="name">用户名</label>
+                            <div class="controls">
+                                <input type="text" class="input-xlarge" id="name" value="username" readonly>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label" for="pwd">密码</label>
+                            <div class="controls">
+                                <input type="text" class="input-xlarge" id="pwd">
+                                <p class="help-block">请输入您的密码</p>
+                            </div>
+                        </div>
+                    </fieldset>
+                </form>
+                <p>
+                    <button type="button" class="btn btn-primary btn-sm" id="save_button" onclick="save_personal_info()">保存更改</button>
+                    &nbsp;
+                    &nbsp;
+                    &nbsp;
+                    &nbsp;
+                    &nbsp;
+                    &nbsp;
+                    &nbsp;
+                    &nbsp;
+                    <button type="button" class="btn btn-default btn-sm" id="cancel_button" onclick='cancel_button()'>取消</button>
+                </p>
+            </div>
+            <div id="a3">
+                <!-- 关注股票 -->
+                <h2>您所关注的股票</h2>
+                <h4>按shift快速多选</h4>
+                <hr>
+                <table cellpadding="0" cellspacing="0" border="0" class="display" id="example" width="100%">
+                    <thead>
+                    <tr>
+                        <th>股票代码</th>
+                        <th>股票名称</th>
+                        <th>主营业务</th>
+                        <th>关注度</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                    <tfoot>
+                    </tfoot>
+                </table>
+                <div class="pull-left">
+                    <button type="button" class="btn" id="choose_all" onclick="choose_all()">选取全部</button>
+                    <button type="button" class="btn" id="choose_none" onclick="choose_none()">取消选取</button>
+                </div>
+                <div  class="pull-right">
+                    <button type="button" class="btn btn-primary" id="cancel_attention_button">取消关注</button>
+                </div>
+            </div>
+
+            <div id="a4">
+                <!-- 策略历史 -->
+                <h2>您的历史策略列表</h2>
+                <h4>按shift快速多选</h4>
+                <hr>
+                <table  cellpadding="0" cellspacing="0" border="0" class="display" id="strategy_history" width="100%">
+                    <thead>
+                    <tr>
+                        <th>策略编号</th>
+                        <th>应用范围</th>
+                        <th>策略类型</th>
+                        <th>开始日期</th>
+                        <th>结束日期</th>
+                        <th>形成期</th>
+                        <th>持有期</th>
+                        <th>查看结果</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                    <tfoot>
+                    </tfoot>
+                </table>
+                <div class="pull-left">
+                    <button type="button" class="btn" id="sh_choose_all" onclick="sh_choose_all()">选取全部</button>
+                    <button type="button" class="btn" id="sh_choose_none" onclick="sh_choose_none()">取消选取</button>
+                </div>
+                <div  class="pull-right">
+                    <button type="button" class="btn btn-primary" id="sh_cancel_attention_button">删除策略</button>
+                </div>
+            </div>
+        </div>
+    </div>
+<script>
+    $(function(){
+        $('#strategy_history tbody').on('click', 'a', function($this) {
+            $(this).html("chosen");
+            var nTrs = $('#strategy_history').dataTable().fnGetNodes();//fnGetNodes获取表格所有行，nTrs[i]表示第i行tr对象
+            //var array={};
+            var data;
+            for(var i = 0; i < nTrs.length; i++){
+                if($(nTrs[i].cells[7]).children('a').html()==$(this).html()){
+                    //alert("shit");
+                    var code=$('#strategy_history').dataTable().fnGetData(nTrs[i]).code;
+                    //array.strategyCode=code;
+                    var username=document.getElementById("span_username").innerHTML;
+                    //array.userName=username;
+                    var array={"strategyCode":code,"userName":username};
+                    $.ajax({
+                        type:'post',
+                        url :'/strategy/viewStrategy',
+                        dataType: "json",
+                        contentType:'application/json;charset=utf-8',
+                        data:JSON.stringify(array),
+                        success:function (data) {
+                            var d=JSON.stringify(data);
+                            var  getval =document.getElementById("span_username").innerHTML;
+                            window.open("strategy.html?id="+getval+"&stra="+data.strategyName);
+                            localStorage.setItem("picture",d);
+                        },
+                        error:function(){
+                            alert("策略获取失败！");
+                        }
+                    });
+                    break;
+                }
+            }
+            $(this).html("查看结果");
+        });
+    });
+</script>
+<script>
+    function choose_all() {
+        $('#example').DataTable().rows().select();
+    }
+</script>
+    <script>
+        function choose_none() {
+            $('#example').DataTable().rows().deselect();
+        }
+    </script>
+    <script>
+        function sh_choose_all() {
+            $('#strategy_history').DataTable().rows().select();
+        }
+    </script>
+    <script>
+        function sh_choose_none() {
+            $('#strategy_history').DataTable().rows().deselect();
+        }
+    </script>
+    <script>
+        function changeDiv(d) {
+            $(function(){
+                if(d=='a2') {
+                    $('#a2').css('display', 'block');
+                    $('#a3').css('display','none');
+                    $('#a4').css('display','none');
+                }
+                if(d=='a3') {
+                    $('#a2').css('display', 'none');
+                    $('#a3').css('display','block');
+                    $('#a4').css('display','none');
+                    showA3();
+                }
+                if(d=='a4') {
+                    $('#a2').css('display', 'none');
+                    $('#a3').css('display','none');
+                    $('#a4').css('display','block');
+                    showA4();
+                }
+            })
+        }
+
+        function  cancel_button() {
+            document.getElementById("pwd").value="";
+            document.getElementById("name").value="";
+        }
+    </script>
+    <script>
+        function showA4() {
+            var username=document.getElementById("name").value;
+            $('#strategy_history').dataTable().fnDestroy();
+            $.ajax({
+                type:'get',
+                url:'/strategy/getStrategyHistory',
+                data:{userName:username},
+                success:function (data){
+                    init_strategy_history_table(data);
+                },
+                error:function () {
+                    alert("请求失败");
+                }
+            });
+            $('#strategy_history tbody').on('click', 'tr', function() {
+                $(this).toggleClass('selected');
+            });
+            $('#sh_cancel_attention_button').click( function () {
+                var nTrs = $('#strategy_history').dataTable().fnGetNodes();//fnGetNodes获取表格所有行，nTrs[i]表示第i行tr对象
+                var array=new Array(nTrs.length);
+                for(var i = 0; i < nTrs.length; i++){
+                    if($(nTrs[i]).hasClass('selected')){
+                        var value=$('#strategy_history').dataTable().fnGetData(nTrs[i]).code;
+                        array[i]=value;
+                    }
+                }
+                delete_history_strategies(array);
+                //alert(array);
+            } );
+        }
+    </script>
+    <script>
+        function showA3() {
+            var username=document.getElementById("name").value;
+            $('#example').dataTable().fnDestroy();
+            $.ajax({
+                type:'get',
+                url:'/oneStock/getPersonFocus',
+                data:{userName:username},
+                success:function (data){
+                    init_focus_stocks_table(data);
+                },
+                error:function () {
+                    alert("请求失败");
+                }
+            });
+            $('#example tbody').on('click', 'tr', function() {
+                $(this).toggleClass('selected');
+            });
+            $('#cancel_attention_button').click( function () {
+                var nTrs = $('#example').dataTable().fnGetNodes();//fnGetNodes获取表格所有行，nTrs[i]表示第i行tr对象
+                var array=new Array();
+                var arrayCount=0;
+                for(var i = 0; i < nTrs.length; i++){
+                    if($(nTrs[i]).hasClass('selected')){
+                        var value=$('#example').dataTable().fnGetData(nTrs[i]).code;
+                        array[arrayCount]=value;
+                        arrayCount++;
+                    }
+                }
+                delete_focus_stocks(array);
+            } );
+        }
+    </script>
+<script>
+    $(document).ready(function() {
+        showvalf();
+        document.getElementById("name").value=document.getElementById("span_username").innerHTML;
+        get_person_info();
+    });
+</script>
+</body>
+</html>

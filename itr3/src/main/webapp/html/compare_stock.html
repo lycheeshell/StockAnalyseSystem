@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+
+    <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/select/1.2.2/js/dataTables.select.min.js"></script>
+    <script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.3.1/js/dataTables.buttons.min.js"></script>
+    <script type="text/javascript" src="../js/bootstrap-datepicker.js"></script>
+    <script type="text/javascript" src="https://img.hcharts.cn/highstock/highstock.js"></script>
+    <script type="text/javascript" src="https://img.hcharts.cn/highcharts/modules/exporting.js"></script>
+    <script type="text/javascript" src="https://img.hcharts.cn/highcharts-plugins/highcharts-zh_CN.js"></script>
+    <script type="text/javascript" src="https://img.hcharts.cn/highcharts/highcharts-more.js"></script>
+    <script type="text/javascript" src="../js/tool.js"></script>
+    <script type="text/javascript" src="../js/compare_stock.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css " href="https://cdn.datatables.net/1.10.15/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" type="text/css" href="../css/main.css">
+    <link rel="stylesheet" type="text/css" href="../css/datepicker.css">
+    <title>Title</title>
+</head>
+<body>
+<nav class="navbar  nav-allIn " id="nav_bar"  role="navigation">
+    <div>
+        <ul class="nav navbar-nav navbar-right">
+            <li class="dropdown" >
+                <a  role="button" class="dropdown-toggle"   data-toggle="dropdown">
+
+                    <span class="glyphicon glyphicon-user navSpan" id="span_username"> 用户</span>
+                    <b class="caret"></b>
+                </a>
+                <!--用户下拉框-->
+                <ul class="dropdown-menu"  id="noneuserDropdown">
+                    <li >
+                        <a  href="Register.html">注册</a>
+                    </li>
+                    <li >
+                        <a  href="Login.html">登录</a>
+                    </li>
+
+                </ul>
+
+                <ul class="dropdown-menu" id="userDropdown">
+                    <li >
+                        <a  href="#" onclick="to_personal_homepage()">个人主页</a>
+                    </li>
+                    <li>
+                        <a role="button" onclick="userLogout()"><span class="glyphicon glyphicon-off" > 退出</span></a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+        <ul class="nav navbar-nav navbar-left">
+            <li class="active">
+                <a href="main.html">
+                    <span class="glyphicon glyphicon-globe navSpan" > 今日大盘</span>
+                </a>
+            </li>
+            <li class="active">
+                <a href="compare_stock.html">
+                    <span class="glyphicon glyphicon-cog  navSpan" > 股票比较</span>
+                </a>
+            </li>
+            <li class="active">
+                <a href="strategy.html">
+                    <span class="glyphicon glyphicon-eye-open  navSpan" > 策略分析</span>
+                </a>
+            </li>
+            <li class="active">
+                <a href="MarketTemper.html">
+                    <span class="glyphicon glyphicon-map-marker navSpan" > 市场温度计</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+</nav>
+<div id="blank"></div>
+
+<!-- 模态框（Modal） 开始日期比结束日期晚 -->
+<div class="modal fade" id="illegalTime" tabindex="-1" role="dialog" aria-labelledby="illegalTimeLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="illegalTimeLabel" style="color:#4D1930">查询失败...</h4>
+            </div>
+            <div class="modal-body" style="font-size: 18px">仔细检查一下日期~~~</div>
+            <!--<div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary">提交更改</button>
+            </div>-->
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+
+<!-- 模态框（Modal） 输入不完整 -->
+<div class="modal fade" id="inputEmpty" tabindex="-1" role="dialog" aria-labelledby="inputEmptyLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="inputEmptyLabel" style="color:#4D1930">查询失败...</h4>
+            </div>
+            <div class="modal-body" style="font-size: 18px">您的输入不太完整~~~</div>
+            <!--<div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary">提交更改</button>
+            </div>-->
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+
+<!-- 模态框（Modal） 获取不到数据 -->
+<div class="modal fade" id="failData" tabindex="-1" role="dialog" aria-labelledby="failDataLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="failDataLabel" style="color:#4D1930">查询失败...</h4>
+            </div>
+            <div class="modal-body" style="font-size: 18px">换个日期试试吧~~~</div>
+            <!--<div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary">提交更改</button>
+            </div>-->
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+
+<!-- 模态框（Modal） 两只股票板块不同 -->
+<div class="modal fade" id="plateDif" tabindex="-1" role="dialog" aria-labelledby="plateDifLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="plateDifLabel" style="color: #4D1930">查询失败...</h4>
+            </div>
+            <div class="modal-body" style="font-size: 18px">请确保两支股票属于同一板块~~~</div>
+            <!--<div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary">提交更改</button>
+            </div>-->
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+
+<!-- 模态框（Modal） 成功 -->
+<div class="modal fade" id="successData" tabindex="-1" role="dialog" aria-labelledby="successDataLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="successDataLabel" style="color:#CDCF6E">查询成功！</h4>
+            </div>
+            <div class="modal-body" style="font-size: 18px">数据正在飞速赶来~~~</div>
+            <!--<div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary">提交更改</button>
+            </div>-->
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+
+<div class="container">
+    <div class="row clearfix">
+        <span class="btn-group">
+            <a class="btn dropdown-toggle" data-toggle="dropdown" href="#" id="stock1">
+                股票代码<span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu" id="ul_1">
+                <!-- dropdown menu links -->
+                <li><a href="#">股票代码</a></li>
+                <li><a href="#">股票名称</a></li>
+            </ul>
+        </span>
+        <input type="text" class="input-medium" id="s1">
+        <span class="btn-group">
+            <a class="btn dropdown-toggle" data-toggle="dropdown" href="#" id="stock2">
+                股票代码<span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu" id="ul_2">
+                <!-- dropdown menu links -->
+                <li><a href="#">股票代码</a></li>
+                <li><a href="#">股票名称</a></li>
+            </ul>
+        </span>
+        <input type="text" class="input-medium" id="s2">
+        <span class="h4">开始时间：</span><span class="well"><input type="text" class="span2" value="" id="dp1" ></span>
+        <span class="h4">结束时间：</span><span class="well"><input type="text" class="span2" value="" id="dp2" ></span>
+        <hr>
+    </div>
+    <div class="row clearfix" style="text-align:center;">
+        <button type="button" class="btn btn-primary" id="search_button" onclick="show_result()">查询</button>
+        <hr>
+    </div>
+    <div class="row clearfix">
+        <div class="col-md-4 column">
+            <div style="text-align:center;">
+                <h2>指标对照表</h2>
+                <hr>
+                <div>
+                    <table cellpadding="0" cellspacing="0" border="0" class="display" id="example" width="100%">
+                        <thead>
+                        <tr>
+                            <th style="text-align:center;">比较项</th>
+                            <th style="text-align:center;">股票一</th>
+                            <th style="text-align:center;">股票二</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8 column">
+            <ul id="myTab" class="nav nav-tabs">
+                <li class="active"><a href="#p1" data-toggle="tab">收盘价</a></li>
+                <li><a href="#p2" data-toggle="tab">对数收益率</a></li>
+                <li><a href="#p3" data-toggle="tab">综合指标</a></li>
+            </ul>
+            <div id="myTabContent" class="tab-content">
+                <div class="tab-pane fade in active" id="p1">
+
+                </div>
+                <div class="tab-pane fade" id="p2">
+
+                </div>
+                <div class="tab-pane fade" id="p3" style="min-width: 400px; max-width: 600px; height: 400px; margin: 0 auto">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(function(){
+        $('#ul_1').children('li').children('a').bind('click', function(){
+            document.getElementById("stock1").innerHTML = $(this).html();
+        });
+        $('#ul_2').children('li').children('a').bind('click', function(){
+            document.getElementById("stock2").innerHTML = $(this).html();
+        });
+    });
+</script>
+<script>
+    $('#dp1').datepicker({
+        format: 'yyyy-mm-dd'
+    });
+    $('#dp2').datepicker({
+        format: 'yyyy-mm-dd'
+    });
+</script>
+<script>
+    function show_result() {
+        $('#example').dataTable().fnDestroy();
+        get_result();
+    }
+</script>
+<script>
+
+    $(document).ready(function() {
+        showvalf();
+        $('#example').DataTable( {
+            "bInfo":false,
+            "bFilter": false,
+            "scrollY":        "200px",
+            "scrollCollapse": true,
+            "paging":         false,
+            "aaData": [
+                [ "最低值",0, 0],
+                [ "最高值",0, 0],
+                [ "涨/跌幅",0, 0],
+                [ "对数收益方差(e-5)",0, 0]
+            ],
+            "aoColumns": [
+                { "sTitle": "比较项" },
+                { "sTitle": "股票一" },
+                { "sTitle": "股票二" },
+            ]
+        } );
+    });
+</script>
+</body>
+</html>
